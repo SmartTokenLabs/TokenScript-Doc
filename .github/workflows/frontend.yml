@@ -3,10 +3,10 @@ name: 'frontend CI'
 on:
   push:
     paths:
-      - './**'
+      - '**'
   pull_request:
     paths:
-      - './**'
+      - '**'
   workflow_dispatch:
 
 env:
