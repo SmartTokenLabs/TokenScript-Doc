@@ -12,7 +12,7 @@ on:
 env:
   ALIAS_DOMAIN_PREV: 'tokenscript-doc.vercel.app'
   ALIAS_DOMAIN_PROD: ''
-  PROJ_PATH: ''
+  PROJ_PATH: '.'
 
 jobs:
   lint:
