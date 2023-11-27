@@ -15,24 +15,6 @@ env:
   PROJ_PATH: '.'
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: latest
-          package_json_file: '${{ env.PROJ_PATH }}/package.json'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'pnpm'
-          cache-dependency-path: ${{ env.PROJ_PATH }}/pnpm-lock.yaml
-      - run: |
-          echo -n "Node version: "
-          node -v
-          echo -n "Npm version: "
-          npm -v
   deploy:
     runs-on: ubuntu-latest
     if: ${{ contains(
