@@ -1,7 +1,8 @@
 {
   "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
+  "store": "Smart Token Store",
+  "tokenscript": "TokenScript",
+
   "about": {
     "title": "About",
     "type": "page"
