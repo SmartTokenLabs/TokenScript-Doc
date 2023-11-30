@@ -22,11 +22,12 @@
 
 8. If TokenScript works as expected then copy file **out/tokenscript.tsml** to some HTTPS hosting and save file URL
 
-Now you can use this URL in tokenscript viewer. Don't forget to replace variables with values **chainId** , **contractAddress** , **tokenId** and replace **tokenScriptFileURL** with its value, its URL, where TSML file located
+Now you can use this URL in tokenscript viewer. Don't forget to replace variables with values **chainId** , **contractAddress** and replace **tokenScriptFileURL** with its value, its URL, where TSML file located.
+
+This is template of TokenScript viewer for your TokenScript file:
 
 ```
-const singleTokenViewTokeScriptURL = `https://viewer-staging.tokenscript.org/?viewType=sts-token&chain=${chainId}&contract=${contractAddress}&tokenId=${tokenId}&tokenscriptUrl=${encodeURIComponent(tokenScriptFileURL)}`
-const allTokensViewTokeScriptURL = `https://viewer-staging.tokenscript.org/?chain=${chainId}&contract=${contractAddress}&tokenscriptUrl=${encodeURIComponent(tokenScriptFileURL)}`
+https://viewer-staging.tokenscript.org/?chain=${chainId}&contract=${contractAddress}&tokenscriptUrl=${encodeURIComponent(tokenScriptFileURL)}
 ```
 
  
