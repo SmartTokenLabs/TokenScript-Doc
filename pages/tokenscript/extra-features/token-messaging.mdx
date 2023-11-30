@@ -1,1 +1,29 @@
-- [] TODO: @Oleh
+# How to build Secure Messaging between ERC721 NFT owners
+
+1. Install tokenscript CLI by running command ```npm i -g @tokenscript/cli```
+
+2. Clone Git repo https://github.com/SmartTokenLabs/TokenScript-Templates - its list of TokenScript Templates
+
+3. Open folder ```/erc-721-messaging```
+
+4. Replace Contract Address and chain ID in /tokenscript.xml, example:
+
+```
+<ts:contract interface="erc721" name="Token">
+	<ts:address network="80001">0xe84Be2e18304AcF07ba2f11e37EABC321f4DC6Df</ts:address>
+</ts:contract>
+```
+
+5. Run “tokenscript build” to build TSML file or ```tokenscript emulate``` to preview your tokenscript in action 
+
+6. copy file “out/tokenscript.tsml” to some HTTPS hosting and save file URL
+
+Now you can use this URL in tokenscript viewer. Dont forget to replace variables with values **chainId** , **contractAddress** , **tokenId** and replace **tokenScriptFileURL** with its value, its URL, where TSML file located
+
+```
+const singleTokenViewTokeScriptURL = `https://viewer-staging.tokenscript.org/?viewType=sts-token&chain=${chainId}&contract=${contractAddress}&tokenId=${tokenId}&tokenscriptUrl=${encodeURIComponent(tokenScriptFileURL)}`
+const allTokensViewTokeScriptURL = `https://viewer-staging.tokenscript.org/?chain=${chainId}&contract=${contractAddress}&tokenscriptUrl=${encodeURIComponent(tokenScriptFileURL)}`
+```
+
+Thats it, ready for messaging.
+

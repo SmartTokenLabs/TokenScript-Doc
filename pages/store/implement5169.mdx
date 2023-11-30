@@ -1,1 +1,41 @@
-- [] TODO: @Oleh
+# How to implement ERC5169
+
+1. Install [stl-contracts](https://www.npmjs.com/package/stl-contracts) NPM module with command ```npm i stl-contracts```
+
+2. Add next code to your contract
+```
+import "stl-contracts/ERC/ERC5169.sol";
+
+contract ERC721Mint is Ownable, ERC5169, AccessControl, ERC721Enumerable {
+
+	function supportsInterface(bytes4 interfaceId)
+	public view override(ERC5169, ERC721Enumerable)
+	returns (bool)
+	{
+		return
+			ERC721Enumerable.supportsInterface(interfaceId) ||
+			ERC5169.supportsInterface(interfaceId);
+	}
+
+	// limit set contracts to admin only
+	function _authorizeSetScripts(string[] memory) internal view override(ERC5169) onlyOwner {}
+}
+```
+
+3. In case if you don't implement **Ownable** interface then replace **onlyOwner** with your modifier to limit use of **_authorizeSetScripts** to admin or other user/group
+
+4. When contract deployed run command to add script to your contract
+
+```
+let scripts = ["https://your.hosting.com/messaging_mumbai.tsml"]
+    
+const [owner] = await ethers.getSigners();
+    
+const ERC721Mint = await ethers.getContractFactory("ERC721Mint");
+const nft = await ERC721Mint.attach(contractAddress);
+    
+let tx = await nft.connect(owner).setScriptURI(scripts)
+await tx.wait();
+```
+
+When script added then NFTs (which user own) for this contract will appear under [Smart Token Store](https://smart-token-store.vercel.app/)
