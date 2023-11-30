@@ -18,6 +18,8 @@ First, run `pnpm i` to install the dependencies.
 
 Then, run `pnpm dev` to start the development server and visit localhost:3000.
 
+Stage deployed [TokenScript Doc](https://tokenscript-doc.vercel.app/)
+
 ## License
 
 This project is licensed under the MIT License.
