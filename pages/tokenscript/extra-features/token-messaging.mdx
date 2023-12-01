@@ -1,12 +1,14 @@
 # How to build Secure Messaging between ERC721 NFT owners
 
-1. Install tokenscript CLI by running command ```npm i -g @tokenscript/cli```
+1. Clone Token Messaging template from the [Template Center](https://github.com/SmartTokenLabs/TokenScript-Templates)
 
-2. Clone Git repo https://github.com/SmartTokenLabs/TokenScript-Templates - its list of TokenScript Templates
+```sh copy
+npx degit SmartTokenLabs/TokenScript-Templates/erc-721-messaging erc-721-messaging
+```
 
-3. Open folder ```/erc-721-messaging```
+2. Open folder `/erc-721-messaging`
 
-4. Replace Contract Address and chain ID in /tokenscript.xml, example:
+3. Replace Contract Address and chain ID in /tokenscript.xml, example:
 
 ```
 <ts:contract interface="erc721" name="Token">
@@ -14,11 +16,17 @@
 </ts:contract>
 ```
 
-5. Run command ```npm i``` to install all dependencies
+4. Install TokenScript CLI:
 
-6. Run command ```npm run build``` to build TSML file **out/tokenscript.tsml**
+```sh npm2yarn copy
+npm i -g @tokenscript/cli
+```
 
-7. Run ```tokenscript emulate``` to preview your tokenscript in action
+5. Run command `npm i` to install all dependencies
+
+6. Run command `npm run build` to build TSML file **out/tokenscript.tsml**
+
+7. Run `tokenscript emulate` to preview your tokenscript in action
 
 8. If TokenScript works as expected then copy file **out/tokenscript.tsml** to some HTTPS hosting and save file URL
 
@@ -26,11 +34,8 @@ Now you can use this URL in tokenscript viewer. Don't forget to replace variable
 
 This is template of TokenScript viewer for your TokenScript file:
 
-```
+```sh
 https://viewer-staging.tokenscript.org/?chain=${chainId}&contract=${contractAddress}&tokenscriptUrl=${encodeURIComponent(tokenScriptFileURL)}
 ```
 
- 
-
 Thats it, ready for messaging.
-
