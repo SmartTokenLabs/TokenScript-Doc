@@ -1,20 +1,22 @@
-# How to implement ERC5169
+# How to implement ERC-5169
 
-1. Install [stl-contracts](https://www.npmjs.com/package/stl-contracts) NPM module with command ```npm i stl-contracts```
+Implementing ERC-5169 can be conveniently achieved by inserting several lines of code.
 
-2. Add next code to your contract
+1. Install [stl-contracts](https://www.npmjs.com/package/stl-contracts) package:
+
+```sh npm2yarn copy
+npm i stl-contracts
 ```
+
+2. Add following code to your contract
+
+```solidity copy
 import "stl-contracts/ERC/ERC5169.sol";
 
 contract ERC721Mint is Ownable, ERC5169, AccessControl, ERC721Enumerable {
 
-	function supportsInterface(bytes4 interfaceId)
-	public view override(ERC5169, ERC721Enumerable)
-	returns (bool)
-	{
-		return
-			ERC721Enumerable.supportsInterface(interfaceId) ||
-			ERC5169.supportsInterface(interfaceId);
+	function supportsInterface(bytes4 interfaceId) public view override(ERC5169, ERC721Enumerable) returns (bool) {
+		return ERC721Enumerable.supportsInterface(interfaceId) || ERC5169.supportsInterface(interfaceId);
 	}
 
 	// limit set contracts to admin only
@@ -22,20 +24,20 @@ contract ERC721Mint is Ownable, ERC5169, AccessControl, ERC721Enumerable {
 }
 ```
 
-3. In case if you don't implement **Ownable** interface then replace **onlyOwner** with your modifier to limit use of **_authorizeSetScripts** to admin or other user/group
+3. In case if you don't implement **`Ownable`** interface then replace **`onlyOwner`** with your modifier to limit use of **`_authorizeSetScripts`** to admin or other user/group
 
-4. When contract deployed run command to add script to your contract
+4. When contract deployed run the following script to set the `scriptURI`
 
-```
-let scripts = ["https://your.hosting.com/messaging_mumbai.tsml"]
-    
+```js {8} copy
 const [owner] = await ethers.getSigners();
-    
-const ERC721Mint = await ethers.getContractFactory("ERC721Mint");
+
+const ERC721Mint = await ethers.getContractFactory('ERC721Mint');
 const nft = await ERC721Mint.attach(contractAddress);
-    
-let tx = await nft.connect(owner).setScriptURI(scripts)
+
+let tx = await nft
+  .connect(owner)
+  .setScriptURI(['https://your.hosting.com/messaging_mumbai.tsml']);
 await tx.wait();
 ```
 
-When script added then NFTs (which user own) for this contract will appear under [Smart Token Store](https://smart-token-store.vercel.app/)
+When script added then NFTs (which user own) for this contract will appear under [Smart Token Store](https://store.smartlayer.network/)
