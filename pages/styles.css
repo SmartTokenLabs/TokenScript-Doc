@@ -1,0 +1,11 @@
+.white-logo {
+  display: none;
+}
+
+.dark .white-logo {
+  display: block;
+}
+
+.dark .dark-logo {
+  display: none;
+}
