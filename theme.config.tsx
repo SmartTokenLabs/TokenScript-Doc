@@ -35,7 +35,8 @@ const config: DocsThemeConfig = {
   chat: {
     link: 'https://discord.gg/smartlayer',
   },
-  docsRepositoryBase: 'https://discord.gg/smartlayer',
+  docsRepositoryBase:
+    'https://github.com/smarttokenlabs/tokenscript-doc/tree/main',
   footer: {
     text: 'Smart Token Store',
   },
