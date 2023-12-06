@@ -3,14 +3,16 @@
   "store": "Smart Token Store",
   "tokenscript": "TokenScript",
 
-  "about": {
-    "title": "About",
-    "type": "page"
-  },
-  "contact": {
-    "title": "Contact ↗",
+  "storeWebsite": {
+    "title": "Store ↗",
     "type": "page",
-    "href": "https://twitter.com/shuding_",
+    "href": "https://store.smartlayer.network/",
+    "newWindow": true
+  },
+  "tokenscriptWebsite": {
+    "title": "TokenScript ↗",
+    "type": "page",
+    "href": "https://www.tokenscript.org/",
     "newWindow": true
   }
 }
