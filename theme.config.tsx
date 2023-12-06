@@ -40,6 +40,11 @@ const config: DocsThemeConfig = {
   footer: {
     text: 'Smart Token Store',
   },
+  useNextSeoProps() {
+    return {
+      titleTemplate: '%s – Smart Token Store',
+    };
+  },
 };
 
 export default config;
