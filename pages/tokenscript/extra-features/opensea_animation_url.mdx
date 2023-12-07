@@ -1,1 +1,59 @@
-- [] TODO: @Miccy
+# How to add TokenScript viewer to display token info in OpenSea
+
+The OpenSea metadata standard includes the animation_url property.
+animation_url supports HTML pages, allowing you to build rich experiences and interactive NFTs using JavaScript canvas, WebGL, and more.
+The TokenScript viewer surfaces a special view that allows you to embed the TokenScript token card of your TokenScript in OpenSea and other platforms that supports HTML animation_url.
+
+## Prerequisites
+
+To support this functionality you must have these basic requirements met:
+
+1. A TokenScript with the token information card (i.e. a card with type="token" attribute)
+2. Access to set or update the animation URL for each token in your collection.
+
+## Creating the tokenscript
+
+The best way to develop & test your TokenScript is by using the TokenScript CLI.
+
+1. Install the CLI `npm i -g @tokenscript/cli`
+2. Initialise a TokenScript project by running the create command `tokenscript create %{YOUR_PROJECT_DIRECTORY}`
+3. You will be asked to select a template. It is recommended to use the svelte or typescript template as it will allow
+   you to utilise any NPM library in your code (i.e. to use ethers.js or other libraries to query blockchain data).
+4. Next your will be asked to fill in some details for the template. Name, chain and contract are required, but
+   you can leave the rest of the answers blank and can always update them later.
+5. Once the command completes your TokenScript project will be located at the directory you specified.
+   Change to the directory and run `tokenscript emulate`. This command will build the TokenScript project and serve it in your
+   web browser. If all goes well, you should see your token in the SmartToken viewer. Clicking on the "Info" button in the token action list will
+   display the card that will be shown in OpenSea using the animation URL.
+6. You can preview the OpenSea view using the following URL:
+   http://localhost:8090/?viewType=opensea&chain=137&contract=0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe&tokenId=3803829543&tokenscriptUrl=http://localhost:8090/tokenscript.tsml
+   (Replace the contract, chain and token ID with your own values that you entered in step)
+
+### Customising the token card
+
+Token cards contain normal HTML/JS/CSS that you can customise according to your needs. To do this simply edit the corresponding file/s for your
+chosen template. These are:
+
+- Svelte: src/routes/Info.svelte
+- Typescript: src/templates/index.html & src/index.js
+- Empty: index.html
+
+The emulator can be used to live-reload your changes as you code.
+
+## Premade templates
+
+If you don't have the expertise to design your own TokenScript, SmartTokenLabs has developed some pre-made TokenScripts that you can use.
+TODO: Link to pre-made templates
+The Smart Token Store will soon have an online wizard that you can use to deploy these templates without writing a single line of code
+
+## Deployment
+
+### Upload your TokenScript to a public URL
+
+Once you have completed your TokenScript design and development you must build your TokenScript and upload it to a publicly
+accessible URL. This can be a web server, an Amazon S3 bucket (or other CDN) or even IPFS.
+
+### Setting the scriptURI on your contract (ERC5169)
+
+### Updating the token metadata
+
