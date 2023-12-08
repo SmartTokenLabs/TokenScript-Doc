@@ -33,24 +33,36 @@ npm install -g @tokenscript/cli
 
 Run these commands to create a TokenScript project for USDC (ERC-20) token. The next section provides the explanations for each command.
 
-<pre>
-  <code>
-    // Create a tokenscript project for USDC token > mkdir quickstart > cd
-    quickstart
-    <strong>> tokenscript create</strong>? Select project template Empty Project:
-    An empty TokenScript project ? Enter a name for the TokenScript project: USDC
-    ? Select the token type: erc20 ? Enter the ethereum contract address for the
-    TokenScript: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ? Enter the ethereum
-    chainID for the TokenScript: 1 ? Enter a short description for the TokenScript:
-    USDC ? Enter a URL to a website about this TokenScript: https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-    ? Enter an icon URL for the TokenScript (base64 image URLs are supported): https://etherscan.io/token/images/centre-usdc_28.png
-    Initializing template...... done Project successfully initialized! > tokenscript
-    build Processing ./styles.css Processing ./index.html Processing ./mint.html
-    Validate TSML...... done TokenScript build completed successfully! > tokenscript
-    emulate Starting emulator... Build started.. ⚡️[server]: Server is running at
-    https://localhost:8090
-  </code>
-</pre>
+```
+// Create a tokenscript project for USDC token
+> mkdir quickstart
+> cd quickstart
+
+<strong>> tokenscript create
+</strong>? Select project template Empty Project: An empty TokenScript project
+? Enter a name for the TokenScript project: USDC
+? Select the token type: erc20
+? Enter the ethereum contract address for the TokenScript: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+? Enter the ethereum chainID for the TokenScript: 1
+? Enter a short description for the TokenScript: USDC
+? Enter a URL to a website about this TokenScript: https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+? Enter an icon URL for the TokenScript (base64 image URLs are supported): https://etherscan.io/token/images/centre-usdc_28.png
+Initializing template...... done
+Project successfully initialized!
+
+> tokenscript build
+Processing ./styles.css
+Processing ./index.html
+Processing ./mint.html
+Validate TSML...... done
+
+TokenScript build completed successfully!
+
+> tokenscript emulate
+Starting emulator...
+Build started..
+⚡️[server]: Server is running at https://localhost:8090
+```
 
 ### Explanation of commands
 
