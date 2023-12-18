@@ -1,0 +1,148 @@
+# Integrate to wallets
+
+In this integration guide, we will guide you how to support [TokenScript](https://www.tokenscript.org/) and [EIP-5169](https://eips.ethereum.org/EIPS/eip-5169) as a wallet provider like [JoyId](https://x.com/joy_protocol/status/1728309508605423766?s=20) and [Alphawallet](https://alphawallet.com/).
+
+We will use NextJS and wagmi as an example, but the idea is the same for any other tech stack.
+
+## Step 1: Add support for EIP-5169
+
+Check if the NFT contract implements EIP-5169, if yes, then you can use the first value of `scriptURI`.
+
+```jsx copy filename="app/[chainId]/[contract]/[tokenId]/page.tsx"
+export default function AppPageContent({
+  params,
+}: {
+  params: {
+    chainId: string
+    contract: string
+    tokenId: string
+  }
+}) {
+  const chainId = parseInt(params.chainId, 10)
+  const { address } = useAccount()
+
+  // read contract to get scriptURI content, need to check if it's a valid tokenscript url
+  const { scriptURI } = useGetTokenScriptURI(params.contract, chainId)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  const dAppUrl = addQueriesToUrl(`${env.NEXT_PUBLIC_TOKENSCRIPT_VIEW_URL}`, {
+    chainId: params.chainId,
+    contract: params.contract,
+    tokenId: params.tokenId,
+    viewType: "sts-token",
+    chain: chainId.toString(),
+    tokenscriptUrl: encodeURIComponent(scriptURI),
+  })
+
+  useIframePostMessage(iframeRef, dAppUrl)
+
+  return (
+    <iframe
+      key={`${chainId}-${params.contract}-${params.tokenId}-${address}`}
+      ref={iframeRef}
+      src={dAppUrl}
+    />
+  )
+}
+
+function addQueriesToUrl(
+  url: string,
+  params: { [key: string]: string }
+): string {
+  const result = new URL(url)
+  Object.entries(params).forEach(([key, value]) => {
+    result.searchParams.append(key, value)
+  })
+  return result.toString()
+}
+```
+
+## Step 2: implement TokenScript RPC requirements
+
+```jsx copy
+import { RefObject, useEffect } from "react"
+import { useWalletClient } from "wagmi"
+
+export const useIframePostMessage = (
+  iframeRef: RefObject<HTMLIFrameElement>,
+  targetOrigin: string
+) => {
+  const { data: walletClient } = useWalletClient()
+
+  useEffect(() => {
+    function sendResponse(
+      messageData: MessageEvent["data"],
+      response: any,
+      error?: any
+    ) {
+      const data = messageData
+
+      if (response) {
+        data.result = response
+      } else {
+        data.error = error
+      }
+
+      iframeRef.current?.contentWindow?.postMessage(data, targetOrigin)
+    }
+
+    const handleMessage = async (event: MessageEvent) => {
+      if (!walletClient) {
+        return
+      }
+
+      try {
+        switch (event.data.method) {
+          case "eth_accounts":
+          case "eth_requestAccounts": {
+            const data = await walletClient.request({
+              method: event.data.method,
+            })
+            sendResponse(event.data, data)
+            break
+          }
+          case "eth_chainId":
+          case "net_version":
+          case "eth_blockNumber":
+          case "eth_estimateGas":
+          case "eth_sendTransaction":
+          case "eth_getTransactionByHash":
+          case "eth_getTransactionReceipt":
+          case "eth_getTransactionCount":
+          case "personal_sign":
+          case "eth_signTypedData":
+          case "wallet_switchEthereumChain": {
+            const data = await walletClient.request({
+              method: event.data.method,
+              params: event.data.params,
+            })
+            sendResponse(event.data, data)
+            break
+          }
+
+          default:
+            sendResponse(event.data, null, {
+              code: -1,
+              message:
+                "RPC Method " + event.data.method + " is not implemented",
+            })
+            break
+        }
+      } catch (e: any) {
+        const innerError = e.walk()
+
+        if (innerError) e = innerError
+
+        sendResponse(event.data, null, {
+          code: e.data?.code ?? e.code,
+          message: e.message + (e.data?.message ? " " + e.data?.message : ""),
+        })
+      }
+    }
+
+    window.addEventListener("message", handleMessage)
+
+    return () => window.removeEventListener("message", handleMessage)
+  }, [iframeRef, targetOrigin, walletClient])
+}
+```
