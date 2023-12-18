@@ -1,5 +1,5 @@
 {
   "tokenscript-cli": "TokenScript CLI",
   "extra-features": "Extra Features",
-  "wallet": "Integrate to wallets"
+  "integrate-wallet": "Integrate to wallets"
 }
