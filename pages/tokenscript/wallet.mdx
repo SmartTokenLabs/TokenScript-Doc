@@ -6,7 +6,7 @@ We will use NextJS and wagmi as an example, but the idea is the same for any oth
 
 ## Step 1: Add support for EIP-5169
 
-Check if the NFT contract implements EIP-5169, if yes, then you can use the first value of `scriptURI`.
+Check if the NFT contract implements EIP-5169, if yes, then you can use the first value of `scriptURI` to load TokenScript Viewer iframe.
 
 ```jsx copy filename="app/[chainId]/[contract]/[tokenId]/page.tsx"
 export default function AppPageContent({
