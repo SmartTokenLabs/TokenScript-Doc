@@ -2,6 +2,7 @@
   "index": "Introduction",
   "store": "Smart Token Store",
   "tokenscript": "TokenScript",
+  "integrate-wallet": "Integrate to wallets",
   "storeWebsite": {
     "title": "Store ↗",
     "type": "page",
