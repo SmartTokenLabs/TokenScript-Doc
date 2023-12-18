@@ -25,7 +25,7 @@ export default function AppPageContent({
   const { scriptURI } = useGetTokenScriptURI(params.contract, chainId)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  const dAppUrl = addQueriesToUrl(`${env.NEXT_PUBLIC_TOKENSCRIPT_VIEW_URL}`, {
+  const dAppUrl = addQueriesToUrl(`https://viewer.tokenscript.org/`, {
     chainId: params.chainId,
     contract: params.contract,
     tokenId: params.tokenId,
