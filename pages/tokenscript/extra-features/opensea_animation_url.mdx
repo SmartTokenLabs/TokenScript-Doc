@@ -1,1 +1,95 @@
-- [] TODO: @Miccy
+# How to add TokenScript viewer to display token info in OpenSea
+
+The OpenSea metadata standard includes the animation_url property.
+animation_url supports HTML pages, allowing you to build rich experiences and interactive NFTs using JavaScript canvas, WebGL, and more.
+The TokenScript viewer surfaces a special view that allows you to embed the TokenScript token card of your TokenScript in OpenSea and other platforms that supports HTML animation_url.
+
+## Prerequisites
+
+To support this functionality you must have these basic requirements met:
+
+1. A TokenScript with a token information card (i.e. a card with type="token" attribute)
+2. Access to set or update the animation URL for each token in your collection.
+
+## Creating the tokenscript
+
+The best way to develop & test your TokenScript is by using the TokenScript CLI.
+Follow the guide here to start a TokenScript project using the CLI: [Quick Start TokenScript CLI](/tokenscript/tokenscript-cli/quick-start-tokenscript-cli)
+
+### Customising the token card
+
+Token cards contain normal HTML/JS/CSS that you can customise according to your needs. To do this simply edit the corresponding file/s for your
+chosen template. These are:
+
+- Svelte: src/routes/Info.svelte
+- Typescript: src/templates/index.html & src/index.js
+- Empty: index.html
+
+The emulator can be used to live-reload your changes as you code.
+
+### Viewing the OpenSea view locally
+
+You can preview the OpenSea view using the following URL:
+http://localhost:8090/?viewType=opensea&chain=137&contract=0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe&tokenId=3803829543&tokenscriptUrl=http://localhost:8090/tokenscript.tsml
+
+1. Ensure the TokenScript emulator is running
+2. Replace the contract, chain and token ID with your own values that correspond to your TokenScript contract.
+
+## Premade templates
+
+If you don't have the expertise to design your own TokenScript, SmartTokenLabs has developed some pre-made TokenScripts that you can use.
+[Pre-made Templates](https://github.com/SmartTokenLabs/TokenScript-Templates)
+The Smart Token Store will soon have an online wizard that you can use to deploy these templates without writing a single line of code
+
+## Deployment
+
+### Upload your TokenScript to a public URL
+
+Once you have completed your TokenScript design and development you must build your TokenScript and upload it to a publicly
+accessible URL. This can be a web server, an Amazon S3 bucket (or other CDN) or even IPFS.
+Once the file is uploaded, note down the URL and ensure it's loading the TSML correctly.
+
+### Setting the scriptURI on your contract (ERC5169)
+
+The easiest way to set the script URI for your contract is to use Etherscan (or the block explorer applicable for your chain).
+For this to be available you must verify your contract source code. The easiest way to do this is by using the
+[hardhat verify plugin](https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-verify).
+
+Here is the SmartCats contract as an example:
+https://polygonscan.com/address/0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe
+
+1. Navigate to your contract
+2. Click on the contract tab
+3. Depending on your contract type, either click "Write Contract" or "Write as Proxy" to get a list of method in your contract
+4. Click on the red connect button at the top of the contract methods list and connect your wallet with ownership rights on the contract.
+5. Look for setScriptURI and click on it to expand the parameters input.
+6. Enter the full URL of your TokenScript file, click on the write button and sign the transaction to update the contract scriptURI.
+
+### Updating the token metadata
+
+Now that the TokenScript is deployed and scriptURI is updated, we can go ahead and update the metadata for each token ID.
+If you have a large amount of tokens, it may be easier to write a script to update it for you.
+
+For each token.json, edit it to add the animation_url property with the following value, replacing CHAIN, CONTRACT & TOKEN_ID with the values for this specific token:
+`https://viewer.tokenscript.org/?viewType=opensea&chain=${CHAIN}&contract=${CONTRACT}&tokenId=${TOKEN_ID}`
+
+```
+{
+  "name": "Your NFT #3803829543",
+  "description": "Your NFT description",
+  "image": "https://yourwebsite.com/assets/meta/3803829543.png",
+  "attributes": [
+    ...
+  ],
+  "animation_url": "https://viewer.tokenscript.org/?viewType=opensea&chain=137&contract=0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe&tokenId=3803829543"
+}
+```
+Note that the tokenId in the URL matches the token ID for this metadata.
+
+Once you have edited all the metadata files, you can upload/replace them in their original location.
+
+#### Clearing metadata cache
+
+Many services like OpenSea will cache token metadata until it is refreshed manually or programmatically via an API.
+
+For OpenSea, you can do this on the NFT details page or programmatically via the API documented [here](https://docs.opensea.io/reference/refresh_nft)
