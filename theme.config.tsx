@@ -12,11 +12,11 @@ const config: DocsThemeConfig = {
   docsRepositoryBase:
     'https://github.com/smarttokenlabs/tokenscript-doc/tree/main',
   footer: {
-    text: 'Smart Token Store',
+    text: 'Smart Layer Launchpad',
   },
   useNextSeoProps() {
     return {
-      titleTemplate: '%s – Smart Token Store',
+      titleTemplate: '%s – Smart Layer Launchpad',
     };
   },
 };

@@ -1,7 +1,7 @@
 {
-  "name": "smart-token-store-doc",
+  "name": "smart-layer-launchpad-doc",
   "version": "0.0.1",
-  "description": "Smart Token Store Docs",
+  "description": "Smart Layer Launchpad Documentation",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

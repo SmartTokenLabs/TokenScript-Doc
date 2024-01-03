@@ -4,7 +4,7 @@
   "tokenscript": "TokenScript",
   "integrate-wallet": "Integrate to wallets",
   "storeWebsite": {
-    "title": "Store ↗",
+    "title": "Launchpad ↗",
     "type": "page",
     "href": "https://launchpad.smartlayer.network/",
     "newWindow": true
