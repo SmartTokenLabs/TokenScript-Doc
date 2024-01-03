@@ -1,12 +1,12 @@
 {
   "index": "Introduction",
-  "store": "Smart Token Store",
+  "store": "Smart Layer Launchpad",
   "tokenscript": "TokenScript",
   "integrate-wallet": "Integrate to wallets",
   "storeWebsite": {
     "title": "Store ↗",
     "type": "page",
-    "href": "https://store.smartlayer.network/",
+    "href": "https://launchpad.smartlayer.network/",
     "newWindow": true
   },
   "tokenscriptWebsite": {
