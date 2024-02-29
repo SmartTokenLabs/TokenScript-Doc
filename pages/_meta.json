@@ -1,7 +1,9 @@
 {
-  "index": "Introduction",
-  "store": "Smart Layer Launchpad",
-  "tokenscript": "TokenScript",
+  "introduction": "Introduction",
+  "quick-start": "Quick Start",
+  "advance": "Advance",
+  "tutorials": "Tutorials",
+  "tooling": "Tooling",
   "integrate-wallet": "Integrate to wallets",
   "storeWebsite": {
     "title": "Launchpad ↗",

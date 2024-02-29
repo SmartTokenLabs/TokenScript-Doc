@@ -1,0 +1,58 @@
+import { Callout } from 'nextra/components';
+
+# How to implement ERC-5169
+
+## Tools
+
+If you'd like to deploy a standard ERC-721 contract which implements ERC-5169,
+you can use the
+[https://launchpad.smartlayer.network/developer/deploy](https://launchpad.smartlayer.network/developer/deploy)
+
+## For deployed contract which didn't implement ERC-5169
+
+If your contract didn't implement ERC-5169 then you can use the following tool to set the `scriptURI`:
+[https://launchpad.smartlayer.network/developer/scripturi](https://launchpad.smartlayer.network/developer/scripturi)
+
+## Implement manually
+
+Implementing ERC-5169 can be conveniently achieved by inserting several lines of code.
+
+1. Install [stl-contracts](https://www.npmjs.com/package/stl-contracts) package:
+
+```sh npm2yarn copy
+npm i stl-contracts
+```
+
+2. Add following code to your contract
+
+```solidity copy
+import "stl-contracts/ERC/ERC5169.sol";
+
+contract ERC721Mint is Ownable, ERC5169, AccessControl, ERC721Enumerable {
+
+	function supportsInterface(bytes4 interfaceId) public view override(ERC5169, ERC721Enumerable) returns (bool) {
+		return ERC721Enumerable.supportsInterface(interfaceId) || ERC5169.supportsInterface(interfaceId);
+	}
+
+	// limit set contracts to admin only
+	function _authorizeSetScripts(string[] memory) internal view override(ERC5169) onlyOwner {}
+}
+```
+
+3. In case if you don't implement **`Ownable`** interface then replace **`onlyOwner`** with your modifier to limit use of **`_authorizeSetScripts`** to admin or other user/group
+
+4. When contract deployed run the following script to set the `scriptURI`
+
+```js {8} copy
+const [owner] = await ethers.getSigners();
+
+const ERC721Mint = await ethers.getContractFactory('ERC721Mint');
+const nft = await ERC721Mint.attach(contractAddress);
+
+let tx = await nft
+  .connect(owner)
+  .setScriptURI(['https://your.hosting.com/messaging_mumbai.tsml']);
+await tx.wait();
+```
+
+When script added then NFTs (which user own) for this contract will appear under [Smart Layer Launchpad](https://launchpad.smartlayer.network/)

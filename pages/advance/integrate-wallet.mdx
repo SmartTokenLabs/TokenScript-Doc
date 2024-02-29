@@ -1,0 +1,217 @@
+# Integrate to wallets
+
+In this integration guide, we will guide you how to support [TokenScript](https://www.tokenscript.org/) and [EIP-5169](https://eips.ethereum.org/EIPS/eip-5169) as a wallet provider like [JoyId](https://x.com/joy_protocol/status/1728309508605423766?s=20) and [Alphawallet](https://alphawallet.com/).
+
+## Checking for TokenScripts
+
+Before showing the TokenScript in an iframe or webview within your wallet, you must first check that the chain+contract has a TokenScript
+associated with it. The launchpad server provides a public API that you can query to find TokenScripts:
+
+Example in Typescript:
+```typescript
+async function getScriptUri(chain: string, contractAddr: string) {
+
+	// i.e. https://store-backend.smartlayer.network/tokenscript/0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe/chain/137/script-uri
+	const res = await fetch(`https://store-backend.smartlayer.network/tokenscript/${contractAddr.toLowerCase()}/chain/${chain}/script-uri`);
+	const data = await res.json();
+
+	if (!data.scriptURI)
+		return null;
+
+	if (data.scriptURI.erc5169?.length)
+		return <string>data.scriptURI.erc5169[0];
+
+	if (data.scriptURI.offchain?.length)
+		return <string>data.scriptURI.offchain[0];
+
+	return null;
+}
+```
+
+## Integrate into a web application wallet
+
+Web integration uses an iframe to embed a token details screen with TokenScript support.
+We will use NextJS and wagmi as an example, but the idea is the same for any other tech stack.
+
+### Step 1: Open the iFrame
+
+Check if the NFT contract implements TokenScript using the API above, if yes,
+then you can use the first value of `scriptURI` to load TokenScript Viewer iframe.
+
+```jsx copy filename="app/[chainId]/[contract]/[tokenId]/page.tsx"
+export default function AppPageContent({
+  params,
+}: {
+  params: {
+    chainId: string
+    contract: string
+    tokenId: string
+  }
+}) {
+  const chainId = parseInt(params.chainId, 10)
+  const { address } = useAccount()
+
+  // read contract to get scriptURI content, need to check if it's a valid tokenscript url
+  const { scriptURI } = useGetTokenScriptURI(params.contract, chainId)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  const dAppUrl = addQueriesToUrl(`https://viewer.tokenscript.org/`, {
+    chainId: params.chainId,
+    contract: params.contract,
+    tokenId: params.tokenId,
+    viewType: "sts-token",
+    chain: chainId.toString(),
+    tokenscriptUrl: encodeURIComponent(scriptURI),
+  })
+
+  useIframePostMessage(iframeRef, dAppUrl)
+
+  return (
+    <iframe
+      key={`${chainId}-${params.contract}-${params.tokenId}-${address}`}
+      ref={iframeRef}
+      src={dAppUrl}
+    />
+  )
+}
+
+function addQueriesToUrl(
+  url: string,
+  params: { [key: string]: string }
+): string {
+  const result = new URL(url)
+  Object.entries(params).forEach(([key, value]) => {
+    result.searchParams.append(key, value)
+  })
+  return result.toString()
+}
+```
+
+### Step 2: implement TokenScript RPC requirements
+
+```jsx copy
+import { RefObject, useEffect } from "react"
+import { useWalletClient } from "wagmi"
+
+export const useIframePostMessage = (
+  iframeRef: RefObject<HTMLIFrameElement>,
+  targetOrigin: string
+) => {
+  const { data: walletClient } = useWalletClient()
+
+  useEffect(() => {
+    function sendResponse(
+      messageData: MessageEvent["data"],
+      response: any,
+      error?: any
+    ) {
+      const data = messageData
+
+      if (response) {
+        data.result = response
+      } else {
+        data.error = error
+      }
+
+      iframeRef.current?.contentWindow?.postMessage(data, targetOrigin)
+    }
+
+    const handleMessage = async (event: MessageEvent) => {
+      if (!walletClient) {
+        return
+      }
+
+      try {
+        switch (event.data.method) {
+          case "eth_accounts":
+          case "eth_requestAccounts": {
+            const data = await walletClient.request({
+              method: event.data.method,
+            })
+            sendResponse(event.data, data)
+            break
+          }
+          case "eth_chainId":
+          case "net_version":
+          case "eth_blockNumber":
+          case "eth_estimateGas":
+          case "eth_sendTransaction":
+          case "eth_getTransactionByHash":
+          case "eth_getTransactionReceipt":
+          case "eth_getTransactionCount":
+          case "personal_sign":
+          case "eth_signTypedData":
+          case "wallet_switchEthereumChain": {
+            const data = await walletClient.request({
+              method: event.data.method,
+              params: event.data.params,
+            })
+            sendResponse(event.data, data)
+            break
+          }
+
+          default:
+            sendResponse(event.data, null, {
+              code: -1,
+              message:
+                "RPC Method " + event.data.method + " is not implemented",
+            })
+            break
+        }
+      } catch (e: any) {
+        const innerError = e.walk()
+
+        if (innerError) e = innerError
+
+        sendResponse(event.data, null, {
+          code: e.data?.code ?? e.code,
+          message: e.message + (e.data?.message ? " " + e.data?.message : ""),
+        })
+      }
+    }
+
+    window.addEventListener("message", handleMessage)
+
+    return () => window.removeEventListener("message", handleMessage)
+  }, [iframeRef, targetOrigin, walletClient])
+}
+```
+
+## Integrate into a native wallet application
+
+The process of native integration is similar to web application integration,
+but instead of opening an iframe we need to use a webview for the corresponding platform and provide an injected RPC provider.
+
+Due to the number of different webview implementations we haven't provided detailed implementation instructions, but rather high-level tech requirements.
+
+### Open the webview
+
+Check if the NFT contract implements TokenScript using the API above, if yes,
+then you can use the first value of `scriptURI` to load TokenScript Viewer in a webview.
+
+The webview should load the following URL, replacing the tokens with the correct values for the chain, contract, etc.
+
+```
+https://viewer.tokenscript.org/?viewType=alphawallet&chain=${chainId}&contract=${contractAddress}&tokenId=${tokenId}&tokenscriptUrl=${scriptUri}
+```
+
+Note: The "alphawallet" view will automatically connect to the injected RPC provider.
+
+### Provide an injected RPC provider
+
+An injected ethereum RPC provider is required for wallet interaction and is usually implemented through a Javascript interface provided to the webview by your application.
+Most wallets will provide a "Dapp browser", and will therefore already have the components required to provide injected RPC to a webview.
+If this is the case for your app, then good news! It should be a straightforward process to reuse these components to show TokenScript viewer.
+
+If you don't currently have these components, here are a few links that will help you add injected RPC for your chosen platform.
+
+- Android: https://developer.samsung.com/blockchain/platform/programming-guide/cucumber-webview.html
+- iOS: https://github.com/web3swift-team/web3swift
+- Flutter: https://pub.dev/packages/flutter_injected_web3
+
+Note: The RPC provider should support wallet_switchEthereumChain & wallet_addEthereumChain as well as all standard RPC methods.
+
+## Conclusion
+
+That's it, you are now ready to use TokenScript and EIP-5169 in your wallet using TokenScript viewer!
+If you would like to customise the UI TokenScript viewer provides to fit in better with your wallet design, please contact us.
