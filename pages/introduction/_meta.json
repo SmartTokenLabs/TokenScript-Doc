@@ -1,5 +1,7 @@
 {
-  "store": "What is Smart Layer Launchpad",
+  "release": "Release Notes",
   "erc5169": "What is ERC-5169",
-  "implement5169": "How to implement ERC-5169"
+  "tokenscript": "What is TokenScript",
+  "smart-layer-network": "What is Smart Layer Network",
+  "smart-layer-launchpad": "What is Smart Layer Launchpad"
 }

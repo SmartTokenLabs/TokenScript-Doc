@@ -1,10 +1,10 @@
 {
+  "index": "Home",
   "introduction": "Introduction",
   "quick-start": "Quick Start",
   "advance": "Advance",
   "tutorials": "Tutorials",
-  "tooling": "Tooling",
-  "integrate-wallet": "Integrate to wallets",
+  "tooling": "Tooling",  
   "storeWebsite": {
     "title": "Launchpad ↗",
     "type": "page",
