@@ -1,6 +1,9 @@
 {
-  "tokenscript-project": "TokenScript Project Overview",
-  "tokenscript-syntax": "TokenScript Syntax",
+  "tokenscript-project": {
+    "title": "TokenScript Project Overview",
+    "display": "hidden"
+  },
+  "tokenscript-syntax": { "title": "TokenScript Syntax", "display": "hidden" },
   "integrate-wallet": "Integrate to wallets",
   "extra-features": "Extra Features"
 }
