@@ -3,8 +3,8 @@
   "introduction": "Introduction",
   "quick-start": "Quick Start",
   "advance": "Advance",
-  "tutorials": "Tutorials",
-  "tooling": "Tooling",  
+  "tutorials": { "title": "Tutorials", "display": "hidden" },
+  "tooling": { "title": "Tooling", "display": "hidden" },
   "storeWebsite": {
     "title": "Launchpad ↗",
     "type": "page",

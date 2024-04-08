@@ -1,5 +1,5 @@
 {
-  "hello-world": "Hello World",
+  "hello-world": { "title": "Hello World", "display": "hidden" },
   "tokenscript-cli": "TokenScript CLI",
   "implement5169": "How to implement ERC-5169"
 }
