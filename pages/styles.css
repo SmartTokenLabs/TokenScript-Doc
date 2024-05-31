@@ -9,3 +9,29 @@
 .dark .dark-logo {
   display: none;
 }
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -16px;
+}
+.col-50 {
+  width: 50%;
+  padding: 0 16px;
+}
+@media screen and (max-width: 768px) {
+  .col-50 {
+    width: 100%;
+  }
+}
+.text-center {
+  text-align: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}

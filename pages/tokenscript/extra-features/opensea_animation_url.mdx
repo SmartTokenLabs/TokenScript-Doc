@@ -1,1 +1,104 @@
-- [] TODO: @Miccy
+---
+description: Add Animation URL to the NFT metadata
+---
+
+# Animation URL
+
+OpenSea offers a MetaData solution to enrich NFTs with an additional dimension of media content. This new capability is enabled through `animation_url` a Token URI Metadata field that supports various types of media including; video, audio, HTML (SVG, WebGL and TokenScript).
+
+Example TokenURI JSON utilising the `animation_url` field
+
+```json
+{
+	"image":"https://resources.smartlayer.network/smartcat/reources/images/5464593329ab831b4872365e1f1a2bbc.png",
+	"attributes":[
+		{"trait_type":"Collection","value":"SmartCats"},
+		{"trait_type":"TokenId","value":"2741836701"},
+		{"trait_type":"Background","value":"USA - Flag (Common)"},
+		{"trait_type":"Hat","value":"Vietnam - Wig (Common)"},
+		{"trait_type":"Outfit","value":"SL Grey Hoodie (Common)"},
+		{"trait_type":"Level","value":0}
+	],
+	"description":"SmartCat#2426-2741836701",
+	"name":"SmartCat#2426-2741836701",
+	"animation_url":"https://viewer.tokenscript.org/?viewType=opensea&chain=137&contract=0xd5ca946ac1c1f24eb26dae9e1a53ba6a02bd97fe&tokenId=2741836701"
+}
+```
+
+Once defined a market place that utilises animation_url will be able to enrich NFTs with the newly found content(s). 
+
+Using TokenScript, users can interact with NFTs. In this example (screen shots below) the end user can click on the top left hand image to reveal more information about the token and collection.
+
+<img class="mt-20" src="https://resources.smartlayer.network/images/launchpad-docs/ts_screen_1.jpg" alt="TokenScript screenshot 1" />
+
+<div className="row">
+  <div className="col-50 mt-20">
+    <img src="https://resources.smartlayer.network/images/launchpad-docs/ts_screen_2.jpg" alt="TokenScript screenshot 1" />
+    {/* Content for column 1 */}
+  </div>
+  <div className="col-50 mt-20">
+    <img src="https://resources.smartlayer.network/images/launchpad-docs/ts_screen_3.jpg" alt="TokenScript screenshot 1" />
+    {/* Content for column 2 */}
+  </div>
+</div>
+
+<p class="text-center mt-20 mb-20">Based on the type of Media, the image viewer can be designed to handle it accordingly.</p>
+
+<img src="https://resources.smartlayer.network/images/launchpad-docs/ts_screen_4.jpg" alt="TokenScript screenshot 1" />
+
+<p class="text-center mt-20 mb-20">(Stickman Toys NFT enriched with audio - player is added to token view)</p>
+
+## Supporting animation_url
+
+To support `animation_url` functionality is required to safely read and identify the MetaData and MIME type from a TokenURI’s `animation_url` which can be used to render the content into a web view. HTML content is displayed using a sandboxed iframe.
+
+Following Opensea’s standard an `animation_url` solution should support the following file types:
+
+GLTF, GLB, WEBM, MP4, M4V, OGV, and OGG are supported, along with the audio-only extensions MP3, WAV, and OGA. HTML pages, allowing you to build rich experiences and interactive NFTs using JavaScript canvas, WebGL, and more. Scripts and relative paths within the HTML page are now supported. However, access to browser extensions is not supported.
+
+The maximum file size for media supported is 100MB.
+
+Pseudo code implementation example:
+
+```javascript
+// Example NFT token metadata derived from RPC / Web3 API source
+const nftMetadata = {
+    name: "Example NFT",
+		image: "https://example.com/web3-cats/1/example.png",
+    animation_url: "https://example.com/web3-cats/1/example.mp4", // Example animation URL
+};
+
+// Function to render media based on MIME type
+function renderMedia(animationUrl) {
+    // Fetch the MIME type of the animation URL (example function)
+    const mimeType = getMimeType(animationUrl);
+
+    // Render HTML based on MIME type
+    switch (mimeType) {
+        case 'video/mp4':
+            return `<video src="${animationUrl}" controls autoplay loop></video>`;
+        case 'audio/mpeg':
+            return `<audio src="${animationUrl}" controls autoplay></audio>`;
+        case 'text/html':
+            return `<iframe sandbox="true" src="${animationUrl}"></iframe>`;
+        default:
+            return;
+    }
+}
+
+// Render the media based on metadata
+if (nftMetadata.animation_url) {
+    const animationUrlMedia = renderMedia(nftMetadata.animation_url);
+    console.log(animationUrlMedia);
+} else {
+    console.log("No animation URL provided - render NFT image only");
+}
+```
+
+## Example UI (with animation_url)
+
+<img class="mt-20" src="https://resources.smartlayer.network/images/launchpad-docs/ts_screen_5.jpg" alt="TokenScript screenshot 1" />
+
+## Resources
+
+[https://docs.opensea.io/docs/metadata-standards](https://docs.opensea.io/docs/metadata-standards)
