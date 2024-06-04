@@ -1,6 +1,10 @@
-# Integrate to wallets
+# Integrate into applications
+
+The easiest way to integrate TokenScript into your application is using the TokenScript viewer.
+Integrating in this way allows you to stay up to date with new TokenScript features without deploying new versions of your wallet.
 
 In this integration guide, we will guide you how to support [TokenScript](https://www.tokenscript.org/) and [EIP-5169](https://eips.ethereum.org/EIPS/eip-5169) as a wallet provider like [JoyId](https://x.com/joy_protocol/status/1728309508605423766?s=20) and [Alphawallet](https://alphawallet.com/).
+You can also embed TokenScript viewer into any webpage, such as NFT marketplaces & portfolio apps.
 
 ## Checking for TokenScripts
 
@@ -28,16 +32,26 @@ async function getScriptUri(chain: string, contractAddr: string) {
 }
 ```
 
-## Integrate into a web application wallet
+## Integrate into a web application wallet or other webpage
 
 Web integration uses an iframe to embed a token details screen with TokenScript support.
-We will use NextJS and wagmi as an example, but the idea is the same for any other tech stack.
+We will use a NextJS/wagmi and ethers.js example, but the idea is the same for any other tech stack.
+
+## The token details view
+
+TokenScript viewer provides a custom view that displays an NFT details screen and the actions for the corresponding TokenScript.
+Here is an example: https://viewer.tokenscript.org/?viewType=sts-token&chain=137&contract=0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe&tokenId=3803829543
+
+If you require a different UI, please reach out to us. We would be happy to create a design which better reflects your wallets current UI.
 
 ### Step 1: Open the iFrame
 
 Check if the NFT contract implements TokenScript using the API above, if yes,
-then you can use the first value of `scriptURI` to load TokenScript Viewer iframe.
+then you can use the first value of `scriptURI` or `offchain` to load TokenScript Viewer iframe.
 
+`offchain` are scripts linked using the launchpad API which is an alternative for contract that do not implement the scriptURI (ERC-5169) standard.
+
+With Next.js/wagmi:
 ```jsx copy filename="app/[chainId]/[contract]/[tokenId]/page.tsx"
 export default function AppPageContent({
   params,
@@ -87,8 +101,14 @@ function addQueriesToUrl(
 }
 ```
 
+Note: For ERC-20 tokens, simply omit the tokenId parameter.
+
 ### Step 2: implement TokenScript RPC requirements
 
+The iframe will proxy any RPC requests through postMessage to the parent window where your wallet app runs.
+To implement message & transaction signing, you must listen and process these requests.
+
+With Next.js/wagmi:
 ```jsx copy
 import { RefObject, useEffect } from "react"
 import { useWalletClient } from "wagmi"
@@ -176,6 +196,88 @@ export const useIframePostMessage = (
   }, [iframeRef, targetOrigin, walletClient])
 }
 ```
+
+With ethers.js:
+```
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" integrity="sha512-FDcVY+g7vc5CXANbrTSg1K5qLyriCsGDYCE02Li1tXEYdNQPvLPHNE+rT2Mjei8N7fZbe0WLhw27j2SrGRpdMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body style="margin: 0;">
+		<div style="max-width: 600px; width: 100%; margin: 0 auto; position: relative; height: 100dvh;">
+			<iframe id="frame" src="https://viewer.tokenscript.org/?viewType=sts-token&chain=137&contract=0xD5cA946AC1c1F24Eb26dae9e1A53ba6a02bd97Fe&tokenId=3803829543"style="border: 0; width: 100%; height: 100%;"></iframe>
+		</div>
+		<script>
+			const BASE_URL = "https://viewer.tokenscript.org";
+
+			// Metamask provider
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const iframe = document.getElementById("frame");
+
+			window.addEventListener("message", async (message) => {
+				if (message.origin !== BASE_URL)
+					return;
+
+				if (message.data.jsonrpc !== "2.0")
+					return;
+
+				console.log("[IFRAME_RPC] request received: ", message);
+
+				try {
+					switch (message.data.method) {
+						case "eth_accounts":
+						case "eth_requestAccounts":
+							await window.ethereum.enable();
+							const accounts = await provider.listAccounts();
+							sendResponse(message.data, accounts);
+							break;
+						case "eth_chainId":
+						case "net_version":
+						case "eth_blockNumber":
+						case "eth_estimateGas":
+						case "eth_sendTransaction":
+						case "eth_getTransactionByHash":
+						case "eth_getTransactionReceipt":
+						case "eth_getTransactionCount":
+						case "personal_sign":
+						case "eth_signTypedData":
+						case "wallet_switchEthereumChain":
+							const result = await provider.send(message.data.method, message.data.params);
+							sendResponse(message.data, result);
+							break;
+
+						default:
+							sendResponse(message.data, null, {code: -1, message: "RPC Method " + message.data.method + " is not implemented"});
+					}
+				} catch (e){
+					console.error(e);
+					sendResponse(message.data, null, {
+						code: e.code,
+						message: e.message
+					});
+				}
+			});
+
+			function sendResponse(messageData, response, error){
+
+				const data = messageData;
+
+				if (response){
+					data.result = response;
+				} else {
+					data.error = error;
+				}
+
+				iframe.contentWindow.postMessage(data, BASE_URL);
+			}
+		</script>
+	</body>
+</html>
+```
+
+As you can see, the code required is minimal. It simply forwards the request to your own RPC provider and returns the result back to the iframe.
 
 ## Integrate into a native wallet application
 

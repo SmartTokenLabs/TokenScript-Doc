@@ -4,6 +4,6 @@
     "display": "hidden"
   },
   "tokenscript-syntax": { "title": "TokenScript Syntax", "display": "hidden" },
-  "integrate-wallet": "Integrate to wallets",
+  "integrate-wallet": "Integrate wallets & webpages",
   "extra-features": "Extra Features"
 }
