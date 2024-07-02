@@ -1,1 +1,25 @@
-to be updated.
+# TokenScript
+
+TokenScript is a JavaScript / XML framework for blockchain token which creates a user-interface layer between a blockchain, APIs and user devices.
+
+TokenScript allows token issuers and other trusted authorities to enrich a given token with a wide set of information, rules and functionalities. With TokenScript wallets and webservices can easily, securely and privately implement a token with all its functions, both onchain and offchain, without the need to understand the underlying smart contract.
+
+You can learn more about TokenScript framework using the legacy documentation [here](https://www.tokenscript.org/docs/).
+
+## Security
+
+One of the main advantages of TokenScript is the use of XML digital signatures to ensure the TokenScript is valid for the contracts that it interacts with.
+DApp are traditionally centralised services, that are hosted by a single entity. In contrast, due to the use of digital signatures, TokenScript applications can be distributed
+and hosted anywhere without impacting user security.
+
+To summarise, TokenScript has the following security principals:
+
+1. Containment - TokenScripts are executed in a sandboxed iFrame or webview. This prevents potentially malicious scripts from accessing user-agents such as a wallet or DApp.
+	The only way a TokenScript can interact with the user-agent is through a defined API provided by the TokenScript Engine & Card SDK.
+
+2. Verification - For a TokenScript to have a valid signature, it must be signed by the owner or deployer of the Token contract it is used with, or another trusted key provided by the user-agent.
+	TokenScripts can only interact freely with contract that it is signed for. If it tries to interact with another contract (i.e. an approval for wETH) the TokenScript engine will display a warning to the user before
+	sending the TX.
+
+3. Whitelisting - Sometimes it is desirable for the user-agent to have more control over what TokenScripts can be loaded. In this case a whitelist can be specified ensuring only reviewed
+	TokenScripts can be loaded into the user-agent. Alternatively a warning can be shown to the user, letting them decide if they want to run an unreviewed TokenScript.
