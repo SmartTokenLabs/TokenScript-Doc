@@ -1,7 +1,7 @@
 {
   "release": { "title": "Release Notes", "display": "hidden" },
   "erc5169": "What is ERC-5169",
-  "tokenscript": { "title": "What is TokenScript", "display": "hidden" },
+  "tokenscript": { "title": "What is TokenScript" },
   "smart-layer-network": {
     "title": "What is Smart Layer Network",
     "display": "hidden"
