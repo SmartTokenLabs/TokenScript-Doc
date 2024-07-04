@@ -127,11 +127,11 @@ export const useIframePostMessage = (
     ) {
       const data = messageData
 
-      if (response) {
-        data.result = response
-      } else {
-        data.error = error
-      }
+	  if (error) {
+	    data.error = error
+	  } else {
+	    data.result = response
+	  }
 
       iframeRef.current?.contentWindow?.postMessage(data, targetOrigin)
     }
