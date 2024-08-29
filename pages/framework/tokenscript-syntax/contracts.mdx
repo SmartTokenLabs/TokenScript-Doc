@@ -12,9 +12,38 @@ Here is an example of defining contracts in your TokenScript XML:
 	<!-- Previous tags omitted -->
 	<ts:contract interface="erc721" name="ReallyCoolToken">
 		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{NFT_CONTRACT_ADDRESS}</ts:address>
+		<ts:abi>
+
+		</ts:abi>
 	</ts:contract>
 	<ts:contract name="MySatelliteContract">
 		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{NFT_CONTRACT_ADDRESS}</ts:address>
+		<ts:abi>
+			<![CDATA[
+			[
+				{
+					"constant": true,
+					"inputs": [
+						{
+							"name": "_owner",
+							"type": "address"
+						}
+					],
+					"name": "balanceOf",
+					"outputs": [
+						{
+							"name": "balance",
+							"type": "uint256"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				// Additional methods omitted
+			]
+			]]>
+		</ts:abi>
 	</ts:contract>
 	<ts:origins>
 		<!-- Define the contracts which hold the tokens that the user will use -->
@@ -30,9 +59,25 @@ For each origin contract the `interface` attribute must be defined. The followin
 - erc721
 - erc1155
 
+## Contract Addresses
+
 You can define multiple `ts:address` elements inside each origin contract.
 This allows you to create a single TokenScript that is associated with tokens that live on multiple chains.
 An example of this use-case is an erc20 token that can be bridged across multiple networks.
+
+## Contract ABI
+
+The `ts:abi` element defines the JSON ABI for your ethereum smart contract.
+There are certain situations where you must specify the ABI:
+
+- When using methods with complex return types in TokenScript attributes. Complex return types are methods that return multiple values, structs or arrays.
+- When using complex parameter types in your TokenScript transactions.
+- When you want to call methods for your contract within a TokenScript card (using Card SDK), rather than loading that data with a TokenScript attribute.
+- When you want to be able to decode custom errors that your contract emits and display them to the user.
+
+Note: You only need to specify the ABI for the methods you plan to use, however it is often easiest to include the whole ABI.
+
+## Template placeholders
 
 You may also notice something peculiar about the values in `ts:address`. So what is `$tst{NFT_CONTRACT_ADDRESS}`?
 tst stands for TokenScript Template. These are template variables that are replaced at build time with values defined for your current environment.
