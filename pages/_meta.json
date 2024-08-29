@@ -2,6 +2,7 @@
   "index": "Home",
   "introduction": "Introduction",
   "quick-start": "Quick Start",
+  "framework": "TokenScript Framework",
   "advance": "Advance",
   "tutorials": { "title": "Tutorials", "display": "hidden" },
   "tooling": { "title": "Tooling", "display": "hidden" },
