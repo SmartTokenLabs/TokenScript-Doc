@@ -87,3 +87,18 @@ It's important to consider how top-level attributes may impact performance when 
 - tokenId (in the context of a non-fungible token)
 - ownerAddress (the owner of the current token, usually the currently connected wallet address).
 - chainId (The chain for the current token)
+
+## Complex return types
+
+Smart contracts often return complex data types such as multiple return values, arrays & structs (often referred to as tuples).
+TokenScript attributes can fetch and decode this complex data, as long as the ABI fragment for that method is available in the referenced `ts:contract`.
+
+Simply change the `as` parameter of `ts:call` to `abi`:
+
+```xml
+<ethereum:call function="getComplexInfo" contract="ReallyCoolToken" as="abi">
+	<ts:data>
+		<ts:uint256 ref="tokenId"/>
+	</ts:data>
+</ethereum:call>
+```

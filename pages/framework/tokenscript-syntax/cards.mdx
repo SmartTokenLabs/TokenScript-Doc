@@ -101,10 +101,19 @@ The `ts:view` element defines the web content for this card and also has several
 
 ### urlFragment
 
-The `urlFragment`
+The `urlFragment` fragment attribute is used to support routing within TokenScript projects built as an SPA.
+When the card is loaded this value is added onto the document.location.hash.
 
 ### uiButton
 
+For simple actions, TokenScript viewer UI provides a button at the bottom of the card that can be used to trigger the
+default transaction or invoke the window.onConfirm function defined by the script.
+
+This button is shown by default on action cards and disabled by default on all other cards. The "uiButton" attribute can be used to override the default behavior.
+
 ### fullScreen
 
+By, default cards are shown as a popup modal and should use a responsive design to ensure a good user experience on mobile devices.
+The default max size for the popover modal in TokenScript viewer is 500px wide & 700px high.
 
+If your card should be full screen, simply set `fullScreen="true"`.
