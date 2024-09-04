@@ -12,16 +12,18 @@ This allows the TokenScript developer to focus on their token logic from the ver
 
 ## Core Components
 
-TokenScript framework consists of several components:
+TokenScript consists of several components:
 
-- TokenScript Engine:
+- **TokenScript Engine:**
 	This is the runtime for TokenScript applications. The engine is headless and allows wallets & DApps to integrate TokenScript support in their own UI.
 	You can find the reference implementation of the runtime [here](https://github.com/SmartTokenLabs/tokenscript-engine/tree/master/javascript/engine-js).
-- TokenScript App:
-	The developer creates & builds a TokenScript app into a .tsml file. This is an XML file that embeds Javascript, CSS & HTML to provide the user-interface for their TApp.
-- TokenScript Card SDK:
+
+- **TokenScript Card SDK:**
 	This SDK is injected into the TokenScript Card, and allows the developer to invoke standard functionality provided by the engine (i.e. signing a message, invoking a transaction, etc).
 	You can find the CardSDK [here](https://github.com/SmartTokenLabs/tokenscript-engine/tree/master/javascript/card-sdk).
+
+- **TokenScript App:**
+	The developer creates & builds a TokenScript app into a .tsml file. This is an XML file that embeds Javascript, CSS & HTML to provide the user-interface for their TApp.
 
 The following diagram shows how all these components interact:
 
@@ -61,7 +63,7 @@ You will notice that the structure is similar to that of any NPM-based project w
 Files to note:
 
 - dist - The output of the web build files. The source files are usually converted to a single HTML file with inlined JS/CSS.
-	This is achieved using [vite-plugin-singlefile](https://www.npmjs.com/package/vite-plugin-singlefile).
+	This is achieved using [vite-plugin-singlefile](https://www.npmjs.com/package/vite-plugin-singlefile) or similar.
 - src - The source HTML/CSS/JS files for TokenScript cards.
 - tokenscript.tsml - This is the build artifact that is produced when building the TokenScript project. You can think of it as the TokenScript version of .exe (Windows) or .apk (Android).
 - tokenscript.signed.tsml - The signed version of tokenscript.tsml.

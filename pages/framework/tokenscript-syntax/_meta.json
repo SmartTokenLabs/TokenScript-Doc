@@ -3,5 +3,6 @@
   "contracts": "Contracts",
   "attributes": "Attributes",
   "cards": "Cards",
-  "transactions": "Transactions"
+  "transactions": "Transactions",
+  "selections": "Selections"
 }

@@ -81,6 +81,11 @@ Depending on where you place them, the behavior is slightly different.
 
 It's important to consider how top-level attributes may impact performance when choosing where to place them.
 
+### Attribute dependencies
+
+Attributes can reference other attributes as a dependency. For instance, attribute 'A' may reference the output of attribute 'B' in one of its parameters.
+These dependencies are resolved by the TokenScript engine, but be careful about introducing circular dependencies in your application.
+
 ## Intrinsic attributes
 
 - contractAddress (in the context of a token card)

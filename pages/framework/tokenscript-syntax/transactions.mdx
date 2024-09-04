@@ -41,7 +41,7 @@ This card implements the erc-721 transfer function and does so without any Javas
 </ts:card>
 ```
 
-The syntax for transactions is very similar to attributes that use `ethereum:call`.
+You can see that the syntax for transactions is very similar to attributes that use `ethereum:call`.
 Note: Attributes defined within the card (either in XML or via Card SDK `setProps`) should use `local-ref` rather than `ref` to reference attributes.
 
 Since we have defined our user-input attribute `toAddress`, we only need to supply an input field in the view with the same ID:
@@ -65,6 +65,25 @@ Since we have defined our user-input attribute `toAddress`, we only need to supp
 The engine will ask the card SDK to collect the input value before invoking the transaction.
 The other parameters (ownerAddress & tokenId) are intrinsic attributes that are known by the engine, but can also be user-define attributes.
 
+## Top-level transactions
+
+Each card element can only have a single transaction declared inside which can become a big limitation for more complex actions, such as an erc-20 approval flow.
+This is where top-level transactions come in. Top-level transactions are named transactions that can be invoked from any card using the Card SDK.
+
+```xml
+<ts:transaction name="safeTransferFrom">
+	<ethereum:transaction contract="ReallyCoolToken" function="safeTransferFrom" as="uint">
+		<ts:data>
+			<ts:address ref="ownerAddress"/>
+			<ts:address local-ref="toAddress"/>
+			<ts:uint256 ref="tokenId"/>
+		</ts:data>
+	</ethereum:transaction>
+</ts:transaction>
+```
+
+Top-level transactions must be declared below `ts:attributes` and have a unique name.
+
 ## Setting inputs programmatically
 
 Sometimes using direct user input may not be possible, such as when the input requires some
@@ -73,13 +92,34 @@ processing to get the final value, or when the value is calculated based on some
 The Card SDK's `tokenscript.action.setProps()` method can be used to programmatically set parameter values.
 You do not have to define `ts:user-entry` attributes when using `setProps`.
 
-Note: When using `setProps`, make sure you don't have any HTML input elements with the same ID as the keys you set may be overwritten.
+Note: When using `setProps`, make sure you don't have any HTML input elements with the same ID, as the keys you've already set may be overwritten.
 Alternatively you can define `data-ts-prop="false"` on the input element to disable the automatic collection of input fields.
 
 ## Invoking transactions
 
-### UI Button
+TokenScript provides a few ways to trigger actions depending on your use-case.
+
+### Action Button
+
+The default action button (uiButton) can be used to trigger the card's transaction or an off-chain actions.
+
+If the card does not contain a transaction, the `window.onConfirm` function is triggered to perform the card's intended action.
+An example of this would be if an API call or Ethereum signature is needed to get some transaction inputs.
+In this case we can perform my transaction prep and execute the transaction programmatically:
+
+```javascript
+window.onConfirn = async () => {
+	const res = await getApiData(); // Get some off-chain data to use in our transaction
+	tokenscript.action.setProps({myAttribute: res.myAttribute});
+	await tokenscript.action.executeTransaction();
+}
+```
+
+In this way, even the default action button can be used to chain transactions together and define other complex logic in your TokenScript card.
 
 ### Card SDK
 
+Sometimes a single action button isn't enough, so transactions can be invoked programmatically using the Card SDK.
+See the [Card SDK documentation](../card-sdk) for more details.
 
+When the default action button isn't needed, it can be disabled. See [here](./cards#uiButton) for further details.
