@@ -45,6 +45,7 @@ If you are interested in using another web framework, please reach out to us and
 
 TokenScript projects have the following structure.
 
+```text
 ├── dist
 ├── src
 ├── out
@@ -56,8 +57,9 @@ TokenScript projects have the following structure.
 ├── package-lock.json
 ├── tokenscript.xml
 └── tokenscript-project.json
+```
 
-Note: Files specific to a particular starter template (Svelte, React, TypeScript, etc) have been omitted for brevity.
+Note: Files specific to a particular starter template (Svelte, React, TypeScript, etc.) have been omitted for brevity.
 
 You will notice that the structure is similar to that of any NPM-based project with additional files specific to the TokenScript framework.
 Files to note:
