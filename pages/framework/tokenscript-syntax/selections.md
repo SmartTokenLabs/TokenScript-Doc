@@ -25,8 +25,8 @@ The filter syntax uses a lexer & parser model that supports complex conditions.
 
 You can specify an attribute name on the left hand side of the condition, with a static value on the right:
 
-- `level>0`
-- `canLevelUp=FALSE`
+- ```level>0```
+- ```canLevelUp=FALSE```
 
 We can then use this selection to disable the card for tokens that are greater than level 0
 
@@ -55,26 +55,38 @@ We can then use this selection to disable the card for tokens that are greater t
 Attribute values can also be specified on the right hand side by enclosing the attributes like so: `${tokenId}`.
 In this way we can compare two attribute values to filter tokens:
 
-`wallet=${ownerAddress}`
+```text
+wallet=${ownerAddress}
+```
 
-We can even combine a RHS attribute with some static value:
+We can even combine an RHS attribute with some static value:
 
-`label=prefix-${ownerAddress}-suffix`
+```text
+label=prefix-${ownerAddress}-suffix
+```
 
 ### Complex conditions
 
 Complex condition can be achieved through the use of brackets and logical operators:
 
 Both conditions must be true (AND):
-`&(level>0)(level<10)`
+```text
+&(level>0)(level<10)
+```
 
 At least one condition must be true (OR):
-`|(level<10)(level>20)`
+```text
+|(level<10)(level>20)
+```
 
 Both conditions must be false (NOT):
 
-`!(level=0)(level=10)`
+```text
+!(level=0)(level=10)
+```
 
 Multiple conditions can be grouped using brackets:
 
-`&(!(level=0)(level=10))(wallet=${ownerAddress})`
+```text
+&(!(level=0)(level=10))(wallet=${ownerAddress})
+```
