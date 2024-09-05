@@ -107,7 +107,7 @@ If the card does not contain a transaction, the `window.onConfirm` function is t
 An example of this would be if an API call or Ethereum signature is needed to get some transaction inputs.
 In this case we can perform my transaction prep and execute the transaction programmatically:
 
-```javascript
+```typescript
 window.onConfirn = async () => {
 	const res = await getApiData(); // Get some off-chain data to use in our transaction
 	tokenscript.action.setProps({myAttribute: res.myAttribute});
@@ -123,3 +123,8 @@ Sometimes a single action button isn't enough, so transactions can be invoked pr
 See the [Card SDK documentation](../card-sdk) for more details.
 
 When the default action button isn't needed, it can be disabled. See [here](./cards#uiButton) for further details.
+
+## Ethereum provider
+
+To allow scenarios that are not supported by TokenScript's declarative transactions, the Card SDK provides a EIP-1193 proxy.
+Learn how to use it [here](../card-sdk#ethereum-provider).
